@@ -81,6 +81,8 @@ Minimum requirements:
 Read:
 
 - [Public Beta Guide](docs/PUBLIC_BETA_GUIDE.md)
+- [Google Cloud Run Deployment Guide](docs/CLOUD_RUN_DEPLOYMENT_GUIDE.md)
+- [Cloudflare R2 Setup Guide](docs/R2_SETUP_GUIDE.md)
 - [Render Deployment Guide](docs/RENDER_DEPLOYMENT_GUIDE.md)
 - [Neon PostgreSQL Setup](docs/NEON_POSTGRES_SETUP.md)
 - [Security Notes](docs/SECURITY_NOTES.md)

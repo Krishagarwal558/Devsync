@@ -61,3 +61,22 @@ def test_refresh_tokens_are_opaque_and_hashed() -> None:
     assert refresh_hash != refresh_token
     assert token_service.hash_refresh_token(refresh_token) == refresh_hash
 
+
+def test_beta_requires_r2_storage() -> None:
+    with pytest.raises(ValueError, match="DEVSYNC_STORAGE_PROVIDER must be r2"):
+        Settings(
+            environment="beta",
+            database_url="postgresql+asyncpg://devsync:devsync@localhost:5432/devsync",
+            jwt_secret_key="unit-test-secret-that-is-long-enough",
+            storage_provider="local",
+        )
+
+
+def test_r2_storage_requires_credentials() -> None:
+    with pytest.raises(ValueError, match="Missing R2 settings"):
+        Settings(
+            environment="development",
+            database_url="postgresql+asyncpg://devsync:devsync@localhost:5432/devsync",
+            jwt_secret_key="unit-test-secret-that-is-long-enough",
+            storage_provider="r2",
+        )

@@ -15,7 +15,6 @@ Supported:
 Not supported:
 
 - Team collaboration
-- Production-grade object storage
 - End-to-end encryption
 - Snapshot restore from the cloud
 - Large-file delta sync
@@ -26,12 +25,13 @@ Not supported:
 2. Deploy the backend behind HTTPS.
 3. Set `DEVSYNC_ENVIRONMENT=beta`.
 4. Set a strong random `DEVSYNC_JWT_SECRET_KEY`.
-5. Set `DEVSYNC_CORS_ALLOWED_ORIGINS` to the exact public backend/UI origins.
-6. Run Alembic migrations.
-7. Confirm `/health` returns `status: ok`.
-8. Run `python scripts/public_beta_check.py`.
-9. Create a test account, workspace, and trusted device.
-10. Run the two-folder simulation before using two real devices.
+5. Create a Cloudflare R2 bucket and set `DEVSYNC_STORAGE_PROVIDER=r2`.
+6. Set `DEVSYNC_CORS_ALLOWED_ORIGINS` to the exact public backend/UI origins.
+7. Run Alembic migrations.
+8. Confirm `/health` returns `status: ok`.
+9. Run `python scripts/public_beta_check.py`.
+10. Create a test account, workspace, and trusted device.
+11. Run the two-folder simulation before using two real devices.
 
 ## Tester Instructions
 

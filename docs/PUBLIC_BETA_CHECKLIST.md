@@ -15,8 +15,9 @@
 - [ ] Strong JWT secret configured
 - [ ] HTTPS public URL configured
 - [ ] CORS is not wildcard
+- [ ] Cloudflare R2 bucket configured
+- [ ] `DEVSYNC_STORAGE_PROVIDER=r2`
 - [ ] Upload limit configured
-- [ ] Storage directory is persistent
 - [ ] Migrations run successfully
 - [ ] `/health` returns `ok`
 

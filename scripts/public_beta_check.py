@@ -21,13 +21,19 @@ REQUIRED_FILES = [
     ".github/PULL_REQUEST_TEMPLATE.md",
     "docs/PUBLIC_BETA_GUIDE.md",
     "docs/PUBLIC_BETA_CHECKLIST.md",
+    "docs/CLOUD_RUN_DEPLOYMENT_GUIDE.md",
+    "docs/R2_SETUP_GUIDE.md",
+    "scripts/deploy_cloud_run.ps1",
+    "scripts/run_neon_migrations.ps1",
     "server/.env.beta.example",
+    "server/.env.beta.yaml.example",
     "server/.env.production.example",
 ]
 
 REQUIRED_GITIGNORE_RULES = [
     "server/.env.*",
     "!server/.env.*.example",
+    "!server/.env.*.yaml.example",
     "work/",
     "*.sqlite",
     "*.db",

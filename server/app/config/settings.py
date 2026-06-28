@@ -34,11 +34,25 @@ class Settings(BaseSettings):
     access_token_minutes: int = 15
     refresh_token_days: int = 30
     bcrypt_rounds: int = 12
+    storage_provider: str = "local"
     storage_root: str = "server/storage"
+    r2_endpoint_url: str | None = None
+    r2_bucket_name: str | None = None
+    r2_access_key_id: str | None = None
+    r2_secret_access_key: SecretStr | None = None
     max_upload_bytes: int = 50 * 1024 * 1024
     cors_allowed_origins: list[str] = Field(default_factory=lambda: ["http://127.0.0.1:8000", "http://localhost:8000"])
     rate_limit_requests: int = 120
     rate_limit_window_seconds: int = 60
+
+    @field_validator("storage_provider")
+    @classmethod
+    def validate_storage_provider(cls, value: str) -> str:
+        """Validate configured blob storage provider."""
+        normalized = value.lower()
+        if normalized not in {"local", "r2"}:
+            raise ValueError("DEVSYNC_STORAGE_PROVIDER must be either 'local' or 'r2'")
+        return normalized
 
     @field_validator("environment")
     @classmethod
@@ -119,6 +133,21 @@ class Settings(BaseSettings):
                 raise ValueError("Wildcard CORS origins are not allowed in beta/production")
             if self.reload:
                 raise ValueError("DEVSYNC_RELOAD must be false in beta/production")
+            if self.storage_provider == "local":
+                raise ValueError("DEVSYNC_STORAGE_PROVIDER must be r2 for beta/production")
+        if self.storage_provider == "r2":
+            missing = [
+                name
+                for name, value in {
+                    "DEVSYNC_R2_ENDPOINT_URL": self.r2_endpoint_url,
+                    "DEVSYNC_R2_BUCKET_NAME": self.r2_bucket_name,
+                    "DEVSYNC_R2_ACCESS_KEY_ID": self.r2_access_key_id,
+                    "DEVSYNC_R2_SECRET_ACCESS_KEY": self.r2_secret_access_key,
+                }.items()
+                if value is None or value == ""
+            ]
+            if missing:
+                raise ValueError(f"Missing R2 settings: {', '.join(missing)}")
         return self
 
 

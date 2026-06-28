@@ -35,9 +35,14 @@ def test_public_beta_release_files_exist() -> None:
         ".github/ISSUE_TEMPLATE/feature_request.yml",
         ".github/PULL_REQUEST_TEMPLATE.md",
         "server/.env.beta.example",
+        "server/.env.beta.yaml.example",
         "docs/PUBLIC_BETA_GUIDE.md",
         "docs/PUBLIC_BETA_CHECKLIST.md",
+        "docs/CLOUD_RUN_DEPLOYMENT_GUIDE.md",
+        "docs/R2_SETUP_GUIDE.md",
         "scripts/public_beta_check.py",
+        "scripts/deploy_cloud_run.ps1",
+        "scripts/run_neon_migrations.ps1",
     ]
 
     for path in required:
