@@ -1,7 +1,7 @@
 [project]
 name = "devsync"
-version = "0.1.0"
-description = "Python MVP for local-first developer workspace synchronization."
+version = "0.2.0b1"
+description = "Public beta for DevSync, a developer workspace sync backend and desktop client."
 requires-python = ">=3.10"
 dependencies = [
   "fastapi>=0.115",

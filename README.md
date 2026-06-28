@@ -1,42 +1,50 @@
 # DevSync
 
-DevSync is a private-alpha developer folder sync system. It includes a FastAPI cloud backend and a Python/PySide6 desktop client for syncing local folders across trusted devices.
+DevSync is a public beta developer workspace sync system. It includes a FastAPI cloud backend and a Python/PySide6 desktop client for syncing project folders across trusted devices.
 
-## Current Alpha Scope
+> Public beta means usable for testing with real devices, but not yet suitable for important production data.
 
-Implemented:
+## What Works
 
-- Auth with JWT access tokens and refresh-token rotation
-- Workspaces
-- Trusted devices
-- Sync event protocol
-- File upload/download/versioning
-- WebSocket realtime gateway
+- Authentication with JWT access tokens and refresh-token rotation
+- Workspaces and owner-only membership
+- Trusted device registration
+- Ordered sync event protocol
+- File upload, download, soft delete, and version metadata
+- WebSocket realtime updates
 - Python desktop sync client MVP
 - Local filesystem storage provider
-- Reliability hardening, retry queues, conflict copies, and debug export
+- Retry queues, conflict copies, sync status, debug logs, and release checks
 
-Not implemented yet:
+## Not Ready Yet
 
 - Team invitations
-- Snapshots in cloud sync
-- Delta/chunk sync for cloud
-- Cloud object storage
-- Public deployment automation
+- Cloud snapshots
+- Delta/chunk sync for large files
+- S3/R2 object storage
+- End-to-end encryption
 - Full conflict resolver UI
+- Paid plans or hosted SaaS operations
 
-## Run Backend Locally
+## Quick Start
 
-Copy alpha env:
+Clone the repo:
 
 ```powershell
-Copy-Item server\.env.alpha.example server\.env.alpha
+git clone https://github.com/Krishagarwal558/Devsync.git
+cd Devsync
+```
+
+Copy a local env file:
+
+```powershell
+Copy-Item server\.env.example server\.env
 ```
 
 Start local Postgres + backend:
 
 ```powershell
-docker compose -f docker-compose.alpha.yml --env-file server\.env.alpha up --build
+docker compose -f docker-compose.alpha.yml --env-file server\.env up --build
 ```
 
 Run migrations inside the backend container:
@@ -51,25 +59,46 @@ Health check:
 Invoke-RestMethod http://127.0.0.1:8000/health
 ```
 
-## Run Desktop Client
+Run the desktop client:
 
 ```powershell
 python -m desktop.app.main
 ```
 
-Build Windows exe:
+## Public Beta Deployment
 
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts\build_windows_exe.ps1 -Python python
-```
+Use `server/.env.beta.example` as the template for an internet-facing beta deployment.
 
-## Alpha Test Scripts
+Minimum requirements:
+
+- HTTPS public backend URL
+- Managed PostgreSQL, such as Neon
+- Strong `DEVSYNC_JWT_SECRET_KEY`
+- No wildcard CORS
+- Persistent `DEVSYNC_STORAGE_ROOT`
+- Migrations run before accepting users
+
+Read:
+
+- [Public Beta Guide](docs/PUBLIC_BETA_GUIDE.md)
+- [Render Deployment Guide](docs/RENDER_DEPLOYMENT_GUIDE.md)
+- [Neon PostgreSQL Setup](docs/NEON_POSTGRES_SETUP.md)
+- [Security Notes](docs/SECURITY_NOTES.md)
+- [Known Limitations](docs/KNOWN_LIMITATIONS.md)
+
+## Test And Release Checks
 
 ```powershell
 python -m compileall desktop server tests scripts
 python -m pytest tests -q
 python scripts\two_folder_reliability_smoke.py
-python scripts\alpha_clean_install_check.py --server-url http://127.0.0.1:8000
+python scripts\public_beta_check.py
+```
+
+## Build Windows Desktop App
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\build_windows_exe.ps1 -Python python
 ```
 
 ## Important Folders
@@ -77,20 +106,14 @@ python scripts\alpha_clean_install_check.py --server-url http://127.0.0.1:8000
 ```text
 server/                 FastAPI backend
 desktop/app/            PySide6 desktop client
-docs/                   phase docs and alpha guides
-scripts/                packaging and reliability scripts
-server/storage/         local MVP file storage
+docs/                   release, deployment, and testing guides
+scripts/                packaging, smoke, and release-check scripts
+server/storage/         local MVP file storage, ignored by Git
 ~/.devsync/             desktop state and logs
 ```
 
-## Private Alpha Path
+## Security
 
-1. Deploy backend or run local Docker compose.
-2. Run migrations.
-3. Create an account and workspace through API or desktop flow.
-4. Install/run the desktop client on 2-3 devices.
-5. Log in using the same backend URL.
-6. Trust each device.
-7. Attach local folders to the same workspace.
-8. Edit files and verify uploads/downloads/reconnects/conflict copies.
+Do not commit real `.env` files, database URLs, JWT secrets, local SQLite state, logs, or uploaded file storage. If you accidentally expose a database URL or token, rotate it immediately.
 
+Report vulnerabilities using the guidance in [SECURITY.md](SECURITY.md).

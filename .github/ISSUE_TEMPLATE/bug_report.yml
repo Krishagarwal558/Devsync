@@ -1,0 +1,46 @@
+name: Bug report
+description: Report something broken in DevSync public beta
+title: "[Bug]: "
+labels: ["bug", "public-beta"]
+body:
+  - type: markdown
+    attributes:
+      value: "Thanks for testing DevSync. Remove secrets, tokens, database URLs, and private file contents before submitting."
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Describe the bug clearly.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: "1. Start backend...\n2. Open desktop client...\n3. Edit file..."
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: DevSync version
+      placeholder: "0.2.0b1"
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Backend
+        - Desktop
+        - WebSocket
+        - File sync
+        - Packaging
+        - Docs
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Paste only sanitized logs.
+      render: text

@@ -27,7 +27,7 @@ def create_app() -> FastAPI:
     settings = get_settings()
     configure_logging(settings.log_level)
 
-    app = FastAPI(title=settings.app_name, version="0.2.0")
+    app = FastAPI(title=settings.app_name, version=settings.app_version)
     app.middleware("http")(InMemoryRateLimiter(settings.rate_limit_requests, settings.rate_limit_window_seconds))
     app.middleware("http")(request_id_middleware)
     app.add_middleware(
@@ -48,7 +48,7 @@ def create_app() -> FastAPI:
     @app.get("/health", tags=["health"])
     async def health() -> dict[str, str]:
         """Return service health."""
-        return {"status": "ok", "environment": settings.environment}
+        return {"status": "ok", "environment": settings.environment, "version": settings.app_version}
 
     app.add_api_route("/v1/health", health, methods=["GET"], tags=["health"])
 
@@ -63,7 +63,8 @@ def main() -> int:
     """Run the server using uvicorn."""
     import uvicorn
 
-    uvicorn.run("server.app.main:app", host="127.0.0.1", port=8000, reload=True)
+    settings = get_settings()
+    uvicorn.run("server.app.main:app", host=settings.host, port=settings.port, reload=settings.reload)
     return 0
 
 
