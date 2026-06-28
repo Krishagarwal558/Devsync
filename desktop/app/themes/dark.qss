@@ -1,0 +1,119 @@
+QWidget {
+  background: #0F1117;
+  color: #F3F6FA;
+  font-family: "Segoe UI";
+  font-size: 14px;
+}
+
+QMainWindow {
+  background: #0F1117;
+}
+
+#Sidebar {
+  background: #151922;
+  border-right: 1px solid #2D3340;
+}
+
+#TopBar {
+  background: #0F1117;
+  border-bottom: 1px solid #252B36;
+}
+
+#StatusBar {
+  background: #151922;
+  border-top: 1px solid #252B36;
+  color: #AAB3C2;
+}
+
+QLabel#AppTitle {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+QLabel#PageTitle {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+QLabel#SectionTitle {
+  font-size: 17px;
+  font-weight: 650;
+}
+
+QLabel#Muted {
+  color: #AAB3C2;
+}
+
+QLabel#Success {
+  color: #35C46B;
+  font-weight: 600;
+}
+
+QPushButton {
+  background: #20242D;
+  border: 1px solid #2D3340;
+  border-radius: 8px;
+  padding: 9px 14px;
+  color: #F3F6FA;
+  font-weight: 600;
+}
+
+QPushButton:hover {
+  background: #2A3040;
+}
+
+QPushButton:pressed {
+  background: #1B2030;
+}
+
+QPushButton#PrimaryButton {
+  background: #4C8DFF;
+  border: 1px solid #4C8DFF;
+  color: white;
+}
+
+QPushButton#PrimaryButton:hover {
+  background: #6AA1FF;
+}
+
+QPushButton#SidebarButton {
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: #D7DDE8;
+}
+
+QPushButton#SidebarButton:hover {
+  background: #20242D;
+}
+
+QFrame#Card {
+  background: #171C26;
+  border: 1px solid #2D3340;
+  border-radius: 12px;
+}
+
+QFrame#HeroCard {
+  background: #171C26;
+  border: 1px solid #2D3340;
+  border-radius: 14px;
+}
+
+QLineEdit {
+  background: #171C26;
+  border: 1px solid #2D3340;
+  border-radius: 8px;
+  padding: 9px 10px;
+  color: #F3F6FA;
+}
+
+QLineEdit:focus {
+  border-color: #4C8DFF;
+}
+
+QScrollArea {
+  border: 0;
+}
+

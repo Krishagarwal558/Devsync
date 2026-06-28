@@ -1,0 +1,2 @@
+"""DevSync desktop package."""
+

@@ -1,0 +1,2 @@
+"""Desktop view models."""
+

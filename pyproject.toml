@@ -1,0 +1,30 @@
+[project]
+name = "devsync"
+version = "0.1.0"
+description = "Python MVP for local-first developer workspace synchronization."
+requires-python = ">=3.10"
+dependencies = [
+  "fastapi>=0.115",
+  "httpx>=0.28",
+  "uvicorn[standard]>=0.30",
+  "pydantic>=2",
+  "pydantic-settings>=2",
+  "sqlalchemy[asyncio]>=2",
+  "asyncpg>=0.29",
+  "alembic>=1.13",
+  "watchdog>=4",
+  "websockets>=13",
+  "PySide6>=6.7",
+  "bcrypt<5",
+  "python-multipart>=0.0.9",
+]
+
+[project.scripts]
+devsync = "devsync.cli:main"
+devsync-backend = "backend.app.main:main"
+devsync-cloud = "server.app.main:main"
+devsync-desktop = "desktop.app.main:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
