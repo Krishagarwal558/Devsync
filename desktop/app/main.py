@@ -18,7 +18,8 @@ def main() -> int:
 
     logging.basicConfig(level=logging.INFO)
     app = QApplication(sys.argv)
-    project_root = Path(__file__).resolve().parents[2]
+    bundle_root = Path(getattr(sys, "_MEIPASS", Path(__file__).resolve().parents[2]))
+    project_root = bundle_root
     theme_path = project_root / "desktop" / "app" / "themes" / "dark.qss"
     app.setStyleSheet(theme_path.read_text(encoding="utf-8"))
     window = MainWindow(project_root)

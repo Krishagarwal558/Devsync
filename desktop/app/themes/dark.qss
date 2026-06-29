@@ -1,12 +1,12 @@
 QWidget {
-  background: #0F1117;
-  color: #F3F6FA;
+  background: #0B0F17;
+  color: #F5F7FB;
   font-family: "Segoe UI";
   font-size: 14px;
 }
 
 QMainWindow {
-  background: #0F1117;
+  background: #0B0F17;
 }
 
 #Sidebar {
@@ -31,8 +31,9 @@ QLabel#AppTitle {
 }
 
 QLabel#PageTitle {
-  font-size: 26px;
+  font-size: 30px;
   font-weight: 700;
+  letter-spacing: 0px;
 }
 
 QLabel#SectionTitle {
@@ -41,7 +42,49 @@ QLabel#SectionTitle {
 }
 
 QLabel#Muted {
-  color: #AAB3C2;
+  color: #9BA7BA;
+}
+
+QLabel#HeroSubtitle {
+  color: #B8C2D6;
+  font-size: 15px;
+}
+
+QLabel#Badge {
+  background: #173B2D;
+  border: 1px solid #2C8F63;
+  border-radius: 8px;
+  color: #89F0BD;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 8px;
+}
+
+QLabel#StatusPill {
+  background: #20283A;
+  border: 1px solid #33415C;
+  border-radius: 12px;
+  color: #C6D0E1;
+  font-weight: 700;
+  padding: 7px 12px;
+}
+
+QLabel#StatusPill[state="live"] {
+  background: #123C2A;
+  border-color: #2AAF75;
+  color: #8DF5C0;
+}
+
+QLabel#StatusPill[state="paused"] {
+  background: #20283A;
+  border-color: #33415C;
+  color: #C6D0E1;
+}
+
+QLabel#MetricValue {
+  color: #FFFFFF;
+  font-size: 28px;
+  font-weight: 800;
 }
 
 QLabel#Success {
@@ -50,30 +93,31 @@ QLabel#Success {
 }
 
 QPushButton {
-  background: #20242D;
-  border: 1px solid #2D3340;
+  background: #171D2A;
+  border: 1px solid #2A3447;
   border-radius: 8px;
-  padding: 9px 14px;
-  color: #F3F6FA;
+  padding: 10px 15px;
+  color: #F5F7FB;
   font-weight: 600;
 }
 
 QPushButton:hover {
-  background: #2A3040;
+  background: #222B3D;
+  border-color: #3E4D68;
 }
 
 QPushButton:pressed {
-  background: #1B2030;
+  background: #111827;
 }
 
 QPushButton#PrimaryButton {
-  background: #4C8DFF;
-  border: 1px solid #4C8DFF;
+  background: #2F73FF;
+  border: 1px solid #5D94FF;
   color: white;
 }
 
 QPushButton#PrimaryButton:hover {
-  background: #6AA1FF;
+  background: #4B87FF;
 }
 
 QPushButton#SidebarButton {
@@ -90,30 +134,72 @@ QPushButton#SidebarButton:hover {
 }
 
 QFrame#Card {
-  background: #171C26;
-  border: 1px solid #2D3340;
+  background: #111827;
+  border: 1px solid #253048;
   border-radius: 12px;
 }
 
 QFrame#HeroCard {
-  background: #171C26;
-  border: 1px solid #2D3340;
+  background: #111827;
+  border: 1px solid #2A3A5C;
   border-radius: 14px;
 }
 
+QFrame#AuthCard {
+  background: #111827;
+  border: 1px solid #2B3A58;
+  border-radius: 16px;
+  min-width: 520px;
+  max-width: 620px;
+}
+
+QFrame#MetricCard {
+  background: #111827;
+  border: 1px solid #253048;
+  border-radius: 12px;
+}
+
 QLineEdit {
-  background: #171C26;
-  border: 1px solid #2D3340;
+  background: #0D1320;
+  border: 1px solid #2A3447;
   border-radius: 8px;
-  padding: 9px 10px;
-  color: #F3F6FA;
+  padding: 10px 11px;
+  color: #F5F7FB;
 }
 
 QLineEdit:focus {
-  border-color: #4C8DFF;
+  border-color: #5D94FF;
+}
+
+QComboBox {
+  background: #0D1320;
+  border: 1px solid #2A3447;
+  border-radius: 8px;
+  padding: 10px 11px;
+  color: #F5F7FB;
+}
+
+QComboBox:focus {
+  border-color: #5D94FF;
+}
+
+QListWidget#ActivityList {
+  background: #0D1320;
+  border: 1px solid #253048;
+  border-radius: 12px;
+  padding: 8px;
+}
+
+QListWidget#ActivityList::item {
+  border-bottom: 1px solid #1B2435;
+  padding: 9px;
+}
+
+QListWidget#ActivityList::item:selected {
+  background: #1F3B6D;
+  color: #FFFFFF;
 }
 
 QScrollArea {
   border: 0;
 }
-

@@ -11,6 +11,7 @@ from PySide6.QtWidgets import (
     QFileDialog,
     QComboBox,
     QFormLayout,
+    QFrame,
     QHBoxLayout,
     QLabel,
     QLineEdit,
@@ -55,7 +56,8 @@ class MainWindow(QMainWindow):
         self._pending = 0
 
         self.setWindowTitle("DevSync Cloud Desktop")
-        self.setMinimumSize(920, 620)
+        self.setMinimumSize(1040, 680)
+        self.resize(1120, 720)
         self._stack = QStackedWidget()
         self._login_screen = self._build_login_screen()
         self._workspace_screen = self._build_workspace_screen()
@@ -80,66 +82,139 @@ class MainWindow(QMainWindow):
         screen = QWidget()
         layout = QVBoxLayout(screen)
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title = QLabel("Login to DevSync Cloud")
+
+        card = self._card("AuthCard")
+        card_layout = QVBoxLayout(card)
+        card_layout.setContentsMargins(34, 32, 34, 32)
+        card_layout.setSpacing(16)
+
+        badge = QLabel("PUBLIC BETA")
+        badge.setObjectName("Badge")
+        title = QLabel("DevSync Cloud")
         title.setObjectName("PageTitle")
-        checklist = QLabel("First run: start backend -> create account/workspace -> login -> choose workspace -> choose folder -> start sync")
+        subtitle = QLabel("Keep project folders moving between trusted devices.")
+        subtitle.setObjectName("HeroSubtitle")
+        subtitle.setWordWrap(True)
+        checklist = QLabel("Connect your backend, sign in, choose a workspace, and attach a local folder.")
+        checklist.setObjectName("Muted")
         checklist.setWordWrap(True)
+
         form = QFormLayout()
+        form.setSpacing(12)
         self._server_url = QLineEdit("http://127.0.0.1:8000")
+        self._server_url.setPlaceholderText("https://your-devsync-backend.example.com")
         self._email = QLineEdit()
+        self._email.setPlaceholderText("you@example.com")
         self._password = QLineEdit()
+        self._password.setPlaceholderText("Password")
         self._password.setEchoMode(QLineEdit.EchoMode.Password)
         form.addRow("Server URL", self._server_url)
         form.addRow("Email", self._email)
         form.addRow("Password", self._password)
+
         login = QPushButton("Login")
         login.setObjectName("PrimaryButton")
         login.clicked.connect(self._login)
-        layout.addWidget(title)
-        layout.addWidget(checklist)
-        layout.addLayout(form)
-        layout.addWidget(login)
+
+        card_layout.addWidget(badge, 0, Qt.AlignmentFlag.AlignLeft)
+        card_layout.addWidget(title)
+        card_layout.addWidget(subtitle)
+        card_layout.addWidget(checklist)
+        card_layout.addSpacing(6)
+        card_layout.addLayout(form)
+        card_layout.addSpacing(8)
+        card_layout.addWidget(login)
+        layout.addWidget(card)
         return screen
 
     def _build_workspace_screen(self) -> QWidget:
         screen = QWidget()
         layout = QVBoxLayout(screen)
-        title = QLabel("Connect a Workspace")
-        title.setObjectName("PageTitle")
+        layout.setContentsMargins(42, 36, 42, 36)
+        layout.setSpacing(18)
+
+        header = self._hero_header(
+            "Connect a workspace",
+            "Pick the cloud workspace and the local folder this device should keep in sync.",
+            "STEP 2"
+        )
         self._workspace_combo = QComboBox()
         self._folder_path = QLineEdit()
+        self._folder_path.setPlaceholderText("Choose the local project folder")
         choose = QPushButton("Select Local Folder")
         choose.clicked.connect(self._choose_folder)
         connect = QPushButton("Connect Workspace")
         connect.setObjectName("PrimaryButton")
         connect.clicked.connect(self._connect_workspace)
+
+        setup_card = self._card()
+        setup_layout = QVBoxLayout(setup_card)
+        setup_layout.setContentsMargins(24, 22, 24, 24)
+        setup_layout.setSpacing(12)
+
         row = QHBoxLayout()
         row.addWidget(self._folder_path, 1)
         row.addWidget(choose)
-        layout.addWidget(title)
-        layout.addWidget(QLabel("Workspace"))
-        layout.addWidget(self._workspace_combo)
-        layout.addWidget(QLabel("Local folder"))
-        layout.addLayout(row)
-        layout.addWidget(connect)
+        setup_layout.addWidget(self._section_label("Workspace"))
+        setup_layout.addWidget(self._workspace_combo)
+        setup_layout.addWidget(self._section_label("Local folder"))
+        setup_layout.addLayout(row)
+        setup_layout.addSpacing(8)
+        setup_layout.addWidget(connect, 0, Qt.AlignmentFlag.AlignRight)
+
+        layout.addWidget(header)
+        layout.addWidget(setup_card)
         layout.addStretch(1)
         return screen
 
     def _build_dashboard_screen(self) -> QWidget:
         screen = QWidget()
         layout = QVBoxLayout(screen)
+        layout.setContentsMargins(34, 30, 34, 28)
+        layout.setSpacing(16)
+
+        top = QHBoxLayout()
+        title_box = QVBoxLayout()
         self._workspace_name = QLabel("Workspace")
         self._workspace_name.setObjectName("PageTitle")
-        self._status = QLabel("Connection status: paused")
+        self._status = QLabel("Paused")
+        self._status.setObjectName("StatusPill")
+        title_box.addWidget(self._workspace_name)
+        title_box.addWidget(QLabel("Realtime folder sync for this device."))
+        top.addLayout(title_box, 1)
+        top.addWidget(self._status, 0, Qt.AlignmentFlag.AlignTop)
+
         self._folder_label = QLabel("Local folder: not selected")
+        self._folder_label.setObjectName("Muted")
         self._device_label = QLabel("Device: not selected")
+        self._device_label.setObjectName("Muted")
         self._last_sync = QLabel("Last sync: never")
-        self._stats = QLabel("Uploaded 0 | Downloaded 0 | Pending 0")
+        self._last_sync.setObjectName("Muted")
         self._conflicts = QLabel("Conflicts: none")
         self._conflicts.setObjectName("Muted")
         self._activity = QListWidget()
+        self._activity.setObjectName("ActivityList")
+
+        info = self._card()
+        info_layout = QVBoxLayout(info)
+        info_layout.setContentsMargins(22, 20, 22, 20)
+        info_layout.setSpacing(8)
+        info_layout.addWidget(self._folder_label)
+        info_layout.addWidget(self._device_label)
+        info_layout.addWidget(self._last_sync)
+        info_layout.addWidget(self._conflicts)
+
+        stats_row = QHBoxLayout()
+        self._uploads_value = self._metric_card("Uploaded", "0")
+        self._downloads_value = self._metric_card("Downloaded", "0")
+        self._pending_value = self._metric_card("Pending", "0")
+        stats_row.addWidget(self._uploads_value)
+        stats_row.addWidget(self._downloads_value)
+        stats_row.addWidget(self._pending_value)
+
         buttons = QHBoxLayout()
         start = QPushButton("Start sync")
+        start.setObjectName("PrimaryButton")
         start.clicked.connect(self._start_sync)
         pause = QPushButton("Pause sync")
         pause.clicked.connect(self._pause_sync)
@@ -155,17 +230,63 @@ class MainWindow(QMainWindow):
         settings.clicked.connect(self._show_settings)
         for button in (start, pause, sync_now, retry, open_folder, export_logs, settings):
             buttons.addWidget(button)
-        layout.addWidget(self._workspace_name)
-        layout.addWidget(self._status)
-        layout.addWidget(self._folder_label)
-        layout.addWidget(self._device_label)
-        layout.addWidget(self._last_sync)
-        layout.addWidget(self._stats)
-        layout.addWidget(self._conflicts)
+        buttons.addStretch(1)
+
+        activity_header = QHBoxLayout()
+        activity_title = self._section_label("Recent activity")
+        activity_hint = QLabel("Uploads, reconnects, retries, and conflicts")
+        activity_hint.setObjectName("Muted")
+        activity_header.addWidget(activity_title)
+        activity_header.addWidget(activity_hint, 1, Qt.AlignmentFlag.AlignRight)
+
+        layout.addLayout(top)
+        layout.addWidget(info)
+        layout.addLayout(stats_row)
         layout.addLayout(buttons)
-        layout.addWidget(QLabel("Recent activity"))
+        layout.addLayout(activity_header)
         layout.addWidget(self._activity, 1)
         return screen
+
+    def _card(self, object_name: str = "Card") -> QFrame:
+        frame = QFrame()
+        frame.setObjectName(object_name)
+        return frame
+
+    def _section_label(self, text: str) -> QLabel:
+        label = QLabel(text)
+        label.setObjectName("SectionTitle")
+        return label
+
+    def _hero_header(self, title: str, subtitle: str, badge_text: str) -> QFrame:
+        header = self._card("HeroCard")
+        layout = QVBoxLayout(header)
+        layout.setContentsMargins(26, 24, 26, 24)
+        layout.setSpacing(8)
+        badge = QLabel(badge_text)
+        badge.setObjectName("Badge")
+        title_label = QLabel(title)
+        title_label.setObjectName("PageTitle")
+        subtitle_label = QLabel(subtitle)
+        subtitle_label.setObjectName("HeroSubtitle")
+        subtitle_label.setWordWrap(True)
+        layout.addWidget(badge, 0, Qt.AlignmentFlag.AlignLeft)
+        layout.addWidget(title_label)
+        layout.addWidget(subtitle_label)
+        return header
+
+    def _metric_card(self, title: str, value: str) -> QFrame:
+        card = self._card("MetricCard")
+        layout = QVBoxLayout(card)
+        layout.setContentsMargins(20, 18, 20, 18)
+        layout.setSpacing(4)
+        title_label = QLabel(title)
+        title_label.setObjectName("Muted")
+        value_label = QLabel(value)
+        value_label.setObjectName("MetricValue")
+        layout.addWidget(title_label)
+        layout.addWidget(value_label)
+        card._value_label = value_label  # type: ignore[attr-defined]
+        return card
 
     def _load_saved_settings(self) -> None:
         server_url = self._state.get_setting("server_url")
@@ -241,7 +362,10 @@ class MainWindow(QMainWindow):
         if self._realtime_thread is None or not self._realtime_thread.is_alive():
             self._realtime_thread = threading.Thread(target=self._run_realtime_loop, daemon=True)
             self._realtime_thread.start()
-        self._status.setText("Connection status: watching local folder and realtime cloud")
+        self._status.setText("Live")
+        self._status.setProperty("state", "live")
+        self._status.style().unpolish(self._status)
+        self._status.style().polish(self._status)
         self._add_activity("Started local watcher and realtime connection.")
 
     def _pause_sync(self) -> None:
@@ -253,7 +377,10 @@ class MainWindow(QMainWindow):
                 asyncio.run(self._sync_service.stop_realtime())
             except Exception:
                 pass
-        self._status.setText("Connection status: paused")
+        self._status.setText("Paused")
+        self._status.setProperty("state", "paused")
+        self._status.style().unpolish(self._status)
+        self._status.style().polish(self._status)
         self._add_activity("Paused sync.")
 
     def _run_realtime_loop(self) -> None:
@@ -368,4 +495,6 @@ class MainWindow(QMainWindow):
         self._refresh_stats()
 
     def _refresh_stats(self) -> None:
-        self._stats.setText(f"Uploaded {self._uploads} | Downloaded {self._downloads} | Pending {self._pending}")
+        self._uploads_value._value_label.setText(str(self._uploads))  # type: ignore[attr-defined]
+        self._downloads_value._value_label.setText(str(self._downloads))  # type: ignore[attr-defined]
+        self._pending_value._value_label.setText(str(self._pending))  # type: ignore[attr-defined]
