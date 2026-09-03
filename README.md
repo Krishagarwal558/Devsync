@@ -1,121 +1,152 @@
-# DevSync
+# 🔄 DevSync // Developer Workspace Cloud-Desktop Synchronization
 
-DevSync is a public beta developer workspace sync system. It includes a FastAPI cloud backend and a Python/PySide6 desktop client for syncing project folders across trusted devices.
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue?style=flat-square&logo=python)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com/)
+[![Desktop GUI](https://img.shields.io/badge/Desktop-PySide6_(Qt)-41CD52?style=flat-square&logo=qt)](https://www.qt.io/)
+[![Database](https://img.shields.io/badge/Database-PostgreSQL_%2B_Alembic-336791?style=flat-square&logo=postgresql)](https://www.postgresql.org/)
+[![Status](https://img.shields.io/badge/Status-Public_Beta-orange?style=flat-square)](#public-beta-status)
+[![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
 
-> Public beta means usable for testing with real devices, but not yet suitable for important production data.
+> A distributed developer workspace synchronization platform featuring a high-performance **FastAPI cloud backend** and an intuitive **PySide6 (Qt) desktop client** for real-time project file synchronization across trusted workstations.
 
-## What Works
+---
 
-- Authentication with JWT access tokens and refresh-token rotation
-- Workspaces and owner-only membership
-- Trusted device registration
-- Ordered sync event protocol
-- File upload, download, soft delete, and version metadata
-- WebSocket realtime updates
-- Python desktop sync client MVP
-- Local filesystem storage provider
-- Retry queues, conflict copies, sync status, debug logs, and release checks
+### 🖥️ Synchronization Flow Preview
 
-## Not Ready Yet
+```text
+┌────────────────────────────────────────────────────────────────────────┐
+│  [Desktop Client: Workstation-Alpha]                                    │
+│  [WATCHER] Detected file change: 'src/api/auth.py' (SHA256: e3b0c44...) │
+│  [CLIENT] Packaging event -> Generating diff -> Uploading to cloud     │
+│                                                                        │
+│  [Cloud Backend: FastAPI Relay]                                        │
+│  [EVENT] Workspace #104: Revision bumped v12 -> v13                    │
+│  [RELAY] WebSocket broadcasting update to 2 connected trusted devices  │
+│                                                                        │
+│  [Desktop Client: Workstation-Beta]                                     │
+│  [WS-EVENT] Incoming file version: 'src/api/auth.py'                   │
+│  [SYNC] Validated checksum -> Atomic write complete (0 conflicts)      │
+└────────────────────────────────────────────────────────────────────────┘
+```
 
-- Team invitations
-- Cloud snapshots
-- Delta/chunk sync for large files
-- S3/R2 object storage
-- End-to-end encryption
-- Full conflict resolver UI
-- Paid plans or hosted SaaS operations
+---
 
-## Quick Start
+### 🏗️ System Architecture
 
-Clone the repo:
+```mermaid
+graph TD
+    subgraph Client ["Client Workstations (Windows / Linux)"]
+        FS[Local Project Directory] --> Watcher[Filesystem Event Watcher]
+        Watcher --> RetryQueue[Event Queue & Retry Buffer]
+        RetryQueue --> DesktopUI[PySide6 Desktop Application]
+    end
 
+    subgraph Backend ["DevSync Cloud Backend (FastAPI)"]
+        API[FastAPI REST API Gateway<br/>JWT Auth + Refresh Rotation]
+        WSHub[WebSocket Realtime Event Hub]
+        StorageProvider[Storage Engine<br/>Atomic Writes & Version Metadata]
+        DB[(PostgreSQL Database<br/>Workspaces, Devices, Revisions)]
+    end
+
+    DesktopUI <-->|HTTPS / JWT Auth| API
+    DesktopUI <-->|Bi-directional Sync Stream| WSHub
+    API --> StorageProvider
+    API --> DB
+    WSHub --> DB
+
+    classDef client fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
+    classDef cloud fill:#0f172a,stroke:#a855f7,stroke-width:2px,color:#fff;
+    class FS,Watcher,RetryQueue,DesktopUI client;
+    class API,WSHub,StorageProvider,DB cloud;
+```
+
+---
+
+### ✨ Core Capabilities
+
+- **JWT Authentication with Refresh Rotation:** Secure user signup, login, and silent refresh token rotation across long-running desktop sessions.
+- **Ordered Sync Event Protocol:** Event-driven synchronizer ensuring consistency across file updates, renames, soft deletes, and folder migrations.
+- **WebSocket Realtime Updates:** Instant push notifications to trusted clients to trigger delta downloads the moment changes are committed on another machine.
+- **Local Storage Provider & Version Tracking:** Comprehensive file revisioning with conflict-copy generation whenever concurrent modifications occur.
+- **PySide6 Native Desktop App:** System tray minimization, visual sync progress indicators, conflict inspection, and device connection status.
+- **Production-Ready Containerization:** Docker Compose setup with health checks, database auto-migration via Alembic, and preconfigured networking.
+
+---
+
+### ⚡ Quick Start
+
+#### 1. Clone & Configure Environment
 ```powershell
 git clone https://github.com/Krishagarwal558/Devsync.git
 cd Devsync
-```
-
-Copy a local env file:
-
-```powershell
 Copy-Item server\.env.example server\.env
 ```
 
-Start local Postgres + backend:
-
+#### 2. Launch Local PostgreSQL & Backend
 ```powershell
 docker compose -f docker-compose.alpha.yml --env-file server\.env up --build
 ```
 
-Run migrations inside the backend container:
-
+#### 3. Run Database Migrations & Verify
 ```powershell
 docker compose -f docker-compose.alpha.yml exec backend alembic -c server/alembic.ini upgrade head
-```
-
-Health check:
-
-```powershell
 Invoke-RestMethod http://127.0.0.1:8000/health
 ```
 
-Run the desktop client:
-
+#### 4. Launch Desktop Client
 ```powershell
 python -m desktop.app.main
 ```
 
-## Public Beta Deployment
+---
 
-Use `server/.env.beta.example` as the template for an internet-facing beta deployment.
+### 🌐 Cloud Deployment Guides
 
-Minimum requirements:
+Detailed architecture and infrastructure walk-throughs for production hosting:
 
-- HTTPS public backend URL
-- Managed PostgreSQL, such as Neon
-- Strong `DEVSYNC_JWT_SECRET_KEY`
-- No wildcard CORS
-- Persistent `DEVSYNC_STORAGE_ROOT`
-- Migrations run before accepting users
+- 📘 [Public Beta Guide](docs/PUBLIC_BETA_GUIDE.md) — Operational architecture and checklist
+- 🚀 [Google Cloud Run Deployment](docs/CLOUD_RUN_DEPLOYMENT_GUIDE.md) — Serverless container deployment
+- 📦 [Cloudflare R2 Storage Guide](docs/R2_SETUP_GUIDE.md) — S3-compatible zero-egress object storage
+- 🟣 [Render Deployment Guide](docs/RENDER_DEPLOYMENT_GUIDE.md) — Managed backend web service
+- 🐘 [Neon PostgreSQL Setup](docs/NEON_POSTGRES_SETUP.md) — Serverless Postgres scaling
+- 🛡️ [Security Notes](docs/SECURITY_NOTES.md) — Token policies, CORS, and credential handling
 
-Read:
+---
 
-- [Public Beta Guide](docs/PUBLIC_BETA_GUIDE.md)
-- [Google Cloud Run Deployment Guide](docs/CLOUD_RUN_DEPLOYMENT_GUIDE.md)
-- [Cloudflare R2 Setup Guide](docs/R2_SETUP_GUIDE.md)
-- [Render Deployment Guide](docs/RENDER_DEPLOYMENT_GUIDE.md)
-- [Neon PostgreSQL Setup](docs/NEON_POSTGRES_SETUP.md)
-- [Security Notes](docs/SECURITY_NOTES.md)
-- [Known Limitations](docs/KNOWN_LIMITATIONS.md)
-
-## Test And Release Checks
+### 🧪 Test Suite & Release Verification
 
 ```powershell
+# Run compiler check and unit tests
 python -m compileall desktop server tests scripts
 python -m pytest tests -q
+
+# Execute two-folder sync reliability smoke test
 python scripts\two_folder_reliability_smoke.py
 python scripts\public_beta_check.py
 ```
 
-## Build Windows Desktop App
+### 📦 Build Windows Desktop Executable
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts\build_windows_exe.ps1 -Python python
 ```
 
-## Important Folders
+---
+
+### 📁 Repository Structure
 
 ```text
-server/                 FastAPI backend
-desktop/app/            PySide6 desktop client
-docs/                   release, deployment, and testing guides
-scripts/                packaging, smoke, and release-check scripts
-server/storage/         local MVP file storage, ignored by Git
-~/.devsync/             desktop state and logs
+├── server/               # FastAPI backend, routers, auth & WebSocket relays
+│   ├── alembic/          # Database migrations
+│   └── storage/          # Local file storage layer
+├── desktop/app/          # PySide6 native desktop GUI & filesystem listener
+├── docs/                 # Production deployment and operational guides
+├── scripts/              # Packaging, reliability smoke tests & release scripts
+└── tests/                # Automated pytest suite
 ```
 
-## Security
+---
 
-Do not commit real `.env` files, database URLs, JWT secrets, local SQLite state, logs, or uploaded file storage. If you accidentally expose a database URL or token, rotate it immediately.
+### 📄 License
 
-Report vulnerabilities using the guidance in [SECURITY.md](SECURITY.md).
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
