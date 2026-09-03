@@ -9,6 +9,9 @@
 
 > A distributed developer workspace synchronization platform featuring a high-performance **FastAPI cloud backend** and an intuitive **PySide6 (Qt) desktop client** for real-time project file synchronization across trusted workstations.
 
+> [!NOTE]
+> **Development Note:** This repository was published after the initial development phase. The GitHub commit history therefore does not represent the complete development timeline.
+
 ---
 
 ### 🖥️ Synchronization Flow Preview
